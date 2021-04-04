@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MouseTrap.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="MainWindow" Height="149" Width="315" KeyDown="Window_KeyDown">
     <Grid>
+        <Button x:Name="buttonRecord" Content="Record" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click"/>
+        <Button x:Name="buttonPlayback" Content="Playback" HorizontalAlignment="Left" Margin="155,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click_1"/>
+        <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top"/>
+        <ProgressBar x:Name="progressRecord" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
+        <ProgressBar x:Name="progressPlayback" HorizontalAlignment="Left" Height="54" Margin="155,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
 
     </Grid>
 </Window>

@@ -44,6 +44,9 @@ namespace MouseTrap
             _recordings.Add(newRecording.Id, newRecording);
         }
 
+        public void PlaybackRecording(Recording recording, CancellationToken cancellationToken)
+            => PlaybackRecording(recording, () => cancellationToken.IsCancellationRequested);
+
         public void PlaybackRecording(Recording recording, Func<bool> shouldStop = null)
         {
             var first = recording.Points[0];
@@ -57,6 +60,9 @@ namespace MouseTrap
             }
             _mouseController.MouseEvent(MouseEvents.LeftUp);
         }
+
+        public void DeleteRecording(Recording recording)
+            => DeleteRecording(recording.Id);
 
         public virtual void DeleteRecording(Guid id)
         {
