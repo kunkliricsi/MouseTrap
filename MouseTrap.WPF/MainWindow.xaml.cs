@@ -1,48 +1,64 @@
 ﻿using MouseTrap.WPF.States;
 using MouseTrap.WPF.States.Base;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MouseTrap.WPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly GlobalKeyboardHook _hook;
         private readonly MouseControllerService _mouseController;
         private readonly ObservableMouseRecorderService _mouseRecorder;
 
         private IRecordingState currentState;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly List<string> states = new();
+
         public IRecordingState CurrentState
         {
             get => currentState;
             set
             {
-                label.Content = value.ToString().Split(".").Last();
+                var state = value.ToString().Split(".").Last();
+                var index = states.IndexOf(state);
+                if (index != -1)
+                {
+                    if (index != states.Count - 1)
+                    {
+                        states.RemoveRange(index + 1, states.Count - (index+1));
+                    }
+                }
+                else
+                {
+                    states.Add(state);
+                }
+
+                label.Content = string.Join(" -> ", states);
                 currentState = value;
             }
         }
 
-        public ObservableCollection<Recording> Recordings { get; set; }
+        private ObservableCollection<RecordingView> recordings;
+        public ObservableCollection<RecordingView> Recordings
+        {
+            get => recordings;
+            set
+            {
+                recordings = value;
+                OnPropertyChanged();
+            }
+        }
 
         public MainWindow()
         {
@@ -51,12 +67,20 @@ namespace MouseTrap.WPF
             _hook = new GlobalKeyboardHook();
             _hook.KeyboardPressed += OnKeyboardPressed;
 
+            var sleep = int.Parse((Application.Current as App).Configuration["Recording:SleepMilliseconds"]);
+
             _mouseController = new MouseControllerService();
-            _mouseRecorder = new ObservableMouseRecorderService(_mouseController);
+            _mouseRecorder = new ObservableMouseRecorderService(_mouseController, sleep);
+            Recordings = _mouseRecorder.ObservableRecordings;
 
             RecordingStateBase.SetStateSetter(s => CurrentState = s);
             RecordingStateBase.SetWindow(this);
             CurrentState = new NopState(new StateContext(_mouseRecorder));
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnKeyboardPressed(object sender, GlobalKeyboardHookEventArgs e)
@@ -89,14 +113,14 @@ namespace MouseTrap.WPF
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            //if (e.Key == Key.Delete && listbox.SelectedIndex > 0)
-            //{
-            //    var items = listbox.SelectedItems.Cast<Recording>();
-            //    foreach (var item in items)
-            //    {
-            //        _mouseRecorder.DeleteRecording(item);
-            //    }
-            //}
+            if (e.Key == Key.Delete && listbox.SelectedIndex > -1)
+            {
+                var items = listbox.SelectedItems.Cast<RecordingView>().ToList();
+                foreach (var item in items)
+                {
+                    _mouseRecorder.DeleteRecording(item.Id);
+                }
+            }
         }
     }
 }

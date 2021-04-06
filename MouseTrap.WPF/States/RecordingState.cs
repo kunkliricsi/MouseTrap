@@ -24,9 +24,6 @@ namespace MouseTrap.WPF.States
             Context.EscapeCancellation.Cancel();
             Context.EscapeCancellation = new CancellationTokenSource();
 
-            var lastRecording = Context.Recorder.Recordings.LastOrDefault();
-            if (lastRecording is not null) Context.Recorder.DeleteRecording(lastRecording);
-
             SetCurrentState(new NopState(this));
         }
 

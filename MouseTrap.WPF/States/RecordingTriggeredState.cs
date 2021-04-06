@@ -1,5 +1,6 @@
 ﻿using MouseTrap.WPF.States.Base;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,9 +14,22 @@ namespace MouseTrap.WPF.States
 
         public override void OnEnter()
         {
-            var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(Context.EnterCancellation.Token, Context.EscapeCancellation.Token).Token;
 
-            Task.Run(() => Context.Recorder.StartRecording(linkedToken));
+            Task.Run(() =>
+            {
+                var enterToken = Context.EnterCancellation.Token;
+                var escapeToken = Context.EscapeCancellation.Token;
+
+                var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(enterToken, escapeToken).Token;
+                Context.Recorder.StartRecording(linkedToken);
+
+                if (escapeToken.IsCancellationRequested)
+                {
+                    var lastRecording = Context.Recorder.Recordings.LastOrDefault();
+                    if (lastRecording is not null) Context.Recorder.DeleteRecording(lastRecording);
+                }
+            });
+
             SetCurrentState(new RecordingState(this));
         }
 

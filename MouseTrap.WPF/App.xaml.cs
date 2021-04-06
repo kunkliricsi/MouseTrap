@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using System.IO;
 using System.Windows;
 
 namespace MouseTrap.WPF
@@ -13,5 +9,16 @@ namespace MouseTrap.WPF
     /// </summary>
     public partial class App : Application
     {
+        public IConfiguration Configuration { get; private set; }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            base.OnStartup(e);
+        }
     }
 }

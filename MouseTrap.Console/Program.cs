@@ -8,7 +8,7 @@ namespace MouseTrap
         static void Main(string[] args)
         {
             var mc = new MouseControllerService();
-            var mr = new MouseRecorderService(mc);
+            var mr = new MouseRecorderService(mc, 1);
 
             Console.WriteLine("Press any key to start recording mouse movements.");
             Console.ReadKey();
