@@ -8,11 +8,11 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Mouse Trap" Height="600" Width="420" KeyDown="Window_KeyDown">
     <Grid>
-        <Button x:Name="buttonRecord" Content="Record" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click"/>
-        <Button x:Name="buttonPlayback" Content="Playback" HorizontalAlignment="Left" Margin="128,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click_1"/>
+        <Button x:Name="buttonRecord" Content="Record" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click" Focusable="False"/>
+        <Button x:Name="buttonPlayback" Content="Playback" HorizontalAlignment="Left" Margin="128,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click_1" Focusable="False"/>
         <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
         <ProgressBar x:Name="progressRecord" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
-        <ProgressBar x:Name="progressPlayback" HorizontalAlignment="Left" Height="54" Margin="155,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
+        <ProgressBar x:Name="progressPlayback" HorizontalAlignment="Left" Height="54" Margin="128,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
         <ListBox x:Name="listbox" Margin="10,100,10,10" SelectionMode="Extended" ItemsSource="{Binding Path=Recordings, UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -21,6 +21,7 @@
                         <StackPanel>
                             <TextBlock FontSize="21" Text="{Binding Date, StringFormat=Date: {0:HH:mm:ss}}"/>
                             <TextBlock FontSize="21" Text="{Binding Length.TotalSeconds, StringFormat=Length: {0:N2} seconds}"/>
+                            <TextBlock FontSize="21" Text="{Binding Played, StringFormat=Played: {0} time(s)}"/>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>

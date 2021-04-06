@@ -21,10 +21,10 @@ namespace MouseTrap
         public ICollection<Recording> Recordings => _recordings.Values;
         private readonly Dictionary<Guid, Recording> _recordings = new ();
 
-        public void StartRecording(CancellationToken cancellationToken)
+        public Recording StartRecording(CancellationToken cancellationToken)
             => StartRecording(() => cancellationToken.IsCancellationRequested);
 
-        public virtual void StartRecording(Func<bool> shouldStop)
+        public virtual Recording StartRecording(Func<bool> shouldStop)
         {
             var previousPosition = new Point(0, 0);
             var points = new List<(Point, TimeSpan)>();
@@ -48,12 +48,14 @@ namespace MouseTrap
 
             var newRecording = new Recording(Guid.NewGuid(), DateTime.Now, points);
             _recordings.Add(newRecording.Id, newRecording);
+
+            return newRecording;
         }
 
         public void PlaybackRecording(Recording recording, CancellationToken cancellationToken)
             => PlaybackRecording(recording, () => cancellationToken.IsCancellationRequested);
 
-        public void PlaybackRecording(Recording recording, Func<bool> shouldStop = null)
+        public virtual void PlaybackRecording(Recording recording, Func<bool> shouldStop = null)
         {
             var first = recording.Points[0].point;
             _mouseController.SetCursorPosition(first);

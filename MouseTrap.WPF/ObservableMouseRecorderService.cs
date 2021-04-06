@@ -1,17 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
 namespace MouseTrap.WPF
 {
-    public class RecordingView
+    public class RecordingView : INotifyPropertyChanged
     {
         public Guid Id { get; }
         public DateTime Date { get; }
         public PointCollection Points { get; }
         public TimeSpan Length { get; }
+
+        private int played;
+        public int Played
+        {
+            get => played;
+            set
+            {
+                played = value;
+                OnPropertyChanged();
+            }
+        }
 
         public RecordingView(Recording recording)
         {
@@ -19,6 +32,7 @@ namespace MouseTrap.WPF
             Date = recording.Date;
             Length = recording.Points.Select(v => v.time).Aggregate((a, b) => a + b);
             Points = new PointCollection();
+            Played = 0;
 
             var points = recording.Points.Select(v => new System.Windows.Point(v.point.X, v.point.Y)).ToList();
             var minX = points.Min(p => p.X);
@@ -36,6 +50,12 @@ namespace MouseTrap.WPF
             
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     internal class ObservableMouseRecorderService : MouseRecorderService
@@ -46,13 +66,15 @@ namespace MouseTrap.WPF
 
         public ObservableCollection<RecordingView> ObservableRecordings { get; } = new();
 
-        public override void StartRecording(Func<bool> shouldStop)
+        public override Recording StartRecording(Func<bool> shouldStop)
         {
-            base.StartRecording(shouldStop);
+            var rec = base.StartRecording(shouldStop);
             App.Current.Dispatcher.Invoke(() =>
             {
-                ObservableRecordings.Add(new RecordingView(Recordings.Last()));
+                ObservableRecordings.Add(new RecordingView(rec));
             });
+
+            return rec;
         }
 
         public override void DeleteRecording(Guid id)
@@ -63,6 +85,12 @@ namespace MouseTrap.WPF
             {
                 App.Current.Dispatcher.Invoke(() => ObservableRecordings.Remove(rec));
             }
+        }
+
+        public override void PlaybackRecording(Recording recording, Func<bool> shouldStop = null)
+        {
+            ObservableRecordings.FirstOrDefault(rv => rv.Id == recording.Id).Played++;
+            base.PlaybackRecording(recording, shouldStop);
         }
     }
 }
