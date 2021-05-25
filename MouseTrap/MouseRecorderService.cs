@@ -59,7 +59,9 @@ namespace MouseTrap
         {
             var first = recording.Points[0].point;
             _mouseController.SetCursorPosition(first);
+            Thread.Sleep(100);
             _mouseController.MouseEvent(MouseEvents.LeftDown);
+            Thread.Sleep(100);
             foreach (var coord in recording.Points)
             {
                 _mouseController.SetCursorPosition(coord.point);

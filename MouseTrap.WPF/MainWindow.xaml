@@ -6,14 +6,18 @@
         xmlns:local="clr-namespace:MouseTrap.WPF"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Mouse Trap" Height="600" Width="420" KeyDown="Window_KeyDown">
+        Title="Ricsi" Height="600" Width="420" KeyDown="Window_KeyDown">
     <Grid>
-        <Button x:Name="buttonRecord" Content="Record" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click" Focusable="False"/>
-        <Button x:Name="buttonPlayback" Content="Playback" HorizontalAlignment="Left" Margin="128,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click_1" Focusable="False"/>
-        <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
-        <ProgressBar x:Name="progressRecord" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
-        <ProgressBar x:Name="progressPlayback" HorizontalAlignment="Left" Height="54" Margin="128,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed"/>
-        <ListBox x:Name="listbox" Margin="10,100,10,10" SelectionMode="Extended" ItemsSource="{Binding Path=Recordings, UpdateSourceTrigger=PropertyChanged}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="61*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="buttonRecord" Content="Record" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click" Focusable="False" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonPlayback" Content="Playback" HorizontalAlignment="Left" Margin="74,10,0,0" VerticalAlignment="Top" Height="54" Width="113" Click="Button_Click_1" Focusable="False" Grid.Column="1"/>
+        <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="400"/>
+        <ProgressBar x:Name="progressRecord" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed" Grid.ColumnSpan="2"/>
+        <ProgressBar x:Name="progressPlayback" HorizontalAlignment="Left" Height="54" Margin="74,10,0,0" VerticalAlignment="Top" Width="113" IsIndeterminate="True" Opacity="0.5" Visibility="Collapsed" Grid.Column="1"/>
+        <ListBox x:Name="listbox" Margin="10,100,10,10" SelectionMode="Extended" ItemsSource="{Binding Path=Recordings, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
