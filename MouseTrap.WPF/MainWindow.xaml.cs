@@ -67,10 +67,8 @@ namespace MouseTrap.WPF
             _hook = new GlobalKeyboardHook();
             _hook.KeyboardPressed += OnKeyboardPressed;
 
-            var sleep = int.Parse((Application.Current as App).Configuration["Recording:SleepMilliseconds"]);
-
             _mouseController = new MouseControllerService();
-            _mouseRecorder = new ObservableMouseRecorderService(_mouseController, sleep);
+            _mouseRecorder = new ObservableMouseRecorderService(_mouseController, Configuration.Current.Recording.SleepMilliseconds);
             Recordings = _mouseRecorder.ObservableRecordings;
 
             RecordingStateBase.SetStateSetter(s => CurrentState = s);

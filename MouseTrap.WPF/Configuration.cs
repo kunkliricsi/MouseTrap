@@ -3,9 +3,21 @@ using System.IO;
 
 namespace MouseTrap.WPF
 {
-    public record RecordOptions(int SleepMilliseconds);
-    public record MinMaxOptions(int Max, int Min);
-    public record PlaybackOptions(MinMaxOptions Next);
+    public class RecordOptions
+    {
+        public int SleepMilliseconds { get; set; }
+    }
+
+    public class MinMaxOptions
+    {
+        public int Min { get; set; }
+        public int Max { get; set; }
+    }
+
+    public class PlaybackOptions
+    {
+        public MinMaxOptions NextTime { get; set; }
+    }
 
     public class Configuration
     {

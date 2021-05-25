@@ -29,7 +29,7 @@ namespace MouseTrap.WPF.States
                     Context.Recorder.PlaybackRecording(record, token);
                     Thread.Sleep(random.Next(200, 500));
                     input.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.BACK);
-                    Thread.Sleep(random.Next(200, 1500));
+                    Thread.Sleep(random.Next(Configuration.Current.Playback.NextTime.Min, Configuration.Current.Playback.NextTime.Max));
                 } while (!token.IsCancellationRequested);
             });
 
